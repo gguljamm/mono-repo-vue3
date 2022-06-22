@@ -14,12 +14,10 @@ module.exports = defineConfig({
     },
     plugins: [
       new webpack.container.ModuleFederationPlugin({
-        name: 'app1',
+        name: 'sliderWithDraggableBar',
         filename: 'remoteEntry.js',
         exposes: {
-          './HelloWorld.vue': './src/components/HelloWorld.vue',
-          './HelloHome.vue': './src/components/HelloHome.vue',
-          './App.vue': './src/App.vue',
+          './SliderHome.vue': './src/components/SliderHome.vue',
         },
         shared: {
           vue: {

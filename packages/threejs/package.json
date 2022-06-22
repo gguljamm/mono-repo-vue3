@@ -1,0 +1,16 @@
+{
+  "name": "threejs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve --port=8084",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "shared-dependencies": "*"
+  },
+  "devDependencies": {
+    "three": "^0.141.0"
+  }
+}

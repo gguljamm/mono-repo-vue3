@@ -1,0 +1,129 @@
+<template>
+  <div ref="temp"></div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+const temp = ref(null);
+
+onMounted(async () => {
+  const width = 500, height = 500;
+  var scene = new THREE.Scene();
+
+  // 카메라 ( 카메라 수직 시야 각도, 가로세로 종횡비율, 시야거리 시작지점, 시야거리 끝지점
+  var camera = new THREE.PerspectiveCamera( 45, width/height, 0.1, 1000 );
+
+  // 렌더러 정의 및 크기 지정, 문서에 추가하기
+  var renderer = new THREE.WebGLRenderer( { antialias: true, preserveDrawingBuffer: true } );
+  renderer.setSize( width, height );
+
+  temp.value.appendChild( renderer.domElement );
+
+  // 빛을 생성해서
+  var light1 = new THREE.PointLight( 0xffffff, 1, 100 );
+  // 위치를 적당한 지점에 놓고
+  light1.position.set( 5, 5, 5 );
+  // 장면에 추가합니다.
+  scene.add( light1 );
+
+  // 빛을 또한 생성해서
+  var light2 = new THREE.PointLight( 0xffFFFF, 1, 100 );
+  // 위치를 적당한 지점에 놓고
+  light2.position.set( 7, -5, 6 );
+  // 장면에 추가합니다.
+  scene.add( light2 );
+
+  // 빛을 또한 생성해서
+  var light3 = new THREE.PointLight( 0xffFFFF, 1, 100 );
+  // 위치를 적당한 지점에 놓고
+  light3.position.set( -7, 3, 3 );
+  // 장면에 추가합니다.
+  scene.add( light3 );
+
+  // var floor = new THREE.Mesh(
+  //   new THREE.BoxGeometry( 10, 0.0, 10 ),
+  //   new THREE.MeshStandardMaterial({ color: 0xffcc99 })
+  // )
+  // scene.add ( floor );
+
+  // var cube=Array();
+  // for(let i=0,x=0,z=0;i<20;++i)
+  // {
+  //   let height = Math.random() * 2 + 1;
+  //   // 정육면체 하나 만들기
+  //   cube.push( new THREE.Mesh(
+  //     new THREE.BoxGeometry( 0.6, height, 0.6 ),
+  //     new THREE.MeshStandardMaterial({ color: Math.round(Math.random() * 0xffffff)})
+  //   ));
+  //   cube[i].position.x=(x-2.5);
+  //   cube[i].position.y=height/2;
+  //   cube[i].position.z=z;
+  //
+  //   x++;
+  //   if(i%5==4){ z++; x=0; }
+  //
+  //   // 생성한 모델을 장면에 추가합니다.
+  //   scene.add( cube[i] );
+  // }
+
+  var loader = new THREE.TextureLoader();
+
+  var mesh;
+  loader.load(
+      'http://dreamplan7.cafe24.com/SL/img/%EC%B9%B4%EB%93%9C_%EC%97%B0%EB%82%A0%EB%A6%AC%EA%B8%B0.jpg',
+      function ( texture ) {
+        mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(3, 3, 3),
+            new THREE.MeshStandardMaterial({map: texture})
+        );
+        mesh.name='Box1';
+        scene.add(mesh);
+      }
+  );
+
+  // 카메라의 Z좌표를 물체에서 7 정도 떨어진 지점에 위치합니다.
+  camera.position.z = 7;
+  camera.position.y = 5;
+
+  camera.rotation.x = -35 * ( Math.PI / 180 );
+
+  var controls = new OrbitControls (camera, renderer.domElement);
+  controls.target.set( 0, 0.5, 0 );
+  controls.update();
+  controls.enablePan = false;
+  controls.enableDamping = true;
+
+  // ==========================
+  // 초기화 부분 끝
+  // ==========================
+
+  var framesPerSecond=60;
+
+  // 에니메이션 효과를 자동으로 주기 위한 보조 기능입니다.
+  var animate = function () {
+    // 프레임 처리
+    setTimeout(function() {
+      requestAnimationFrame(animate);
+    }, 1000 / framesPerSecond);
+
+    controls.update();
+
+    // 랜더링을 수행합니다.
+    renderer.render( scene, camera );
+  };
+
+  // animate()함수를 최초에 한번은 수행해주어야 합니다.
+  animate();
+});
+</script>
+
+<style lang="scss">
+canvas{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 999;
+}
+</style>
